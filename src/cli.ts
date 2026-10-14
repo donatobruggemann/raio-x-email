@@ -18,6 +18,22 @@ const CATEGORIA: Record<string, string> = {
   atendimento: "Atendimento",
 };
 
+/** "email:EMAIL", "text:FNAME", "radio:group[2785]" viram "email, nome, uma escolha". */
+function humano(campos: string[]): string {
+  const nomes = campos.map((c) => {
+    const [tipo, nome = ""] = c.split(/:(.*)/s);
+    const n = nome.toLowerCase();
+    if (tipo === "email" || /mail/.test(n)) return "email";
+    if (tipo === "tel" || /fone|phone|whats|celular|tel/.test(n)) return "telefone";
+    if (/lname|sobrenome|last/.test(n)) return "sobrenome";
+    if (/fname|nome|name/.test(n)) return "nome";
+    if (tipo === "radio" || tipo === "checkbox" || tipo === "select-one") return "uma escolha";
+    if (tipo === "textarea" || /mensag|message/.test(n)) return "mensagem";
+    return "outro campo";
+  });
+  return [...new Set(nomes)].join(", ");
+}
+
 function limpar(entrada: string): string {
   return entrada.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "").split(/[/?#]/)[0];
 }
@@ -84,7 +100,7 @@ async function main() {
       if (fs.length) out.push(`  ${CATEGORIA[cat]}: ${fs.map((f) => f.nome).join(", ")}`);
     }
     for (const f of site.formularios) {
-      out.push(`  formulário em ${f.pagina.replace(/^https?:\/\//, "")}: pede ${f.campos.map((c) => c.split(":")[1]).join(", ")} e entrega para ${f.ferramenta ?? "destino não identificado"}`);
+      out.push(`  formulário em ${f.pagina.replace(/^https?:\/\//, "")}: pede ${humano(f.campos)} e entrega para ${f.ferramenta ?? "destino não identificado"}`);
     }
     if (!site.formularios.length) out.push("  nenhum formulário de captura nas páginas lidas");
     out.push("  (a prova de cada ferramenta, a URL que a denunciou, sai com --json)\n");
