@@ -1,0 +1,21 @@
+{
+  "name": "raio-x-email",
+  "version": "0.1.0",
+  "description": "O que qualquer pessoa consegue ver, de fora, sobre o email de um domínio e o site dele. Em português, sem acesso a conta nenhuma.",
+  "license": "MIT",
+  "author": "Donato Brug (Brug Company)",
+  "type": "module",
+  "scripts": {
+    "raio-x": "tsx src/cli.ts",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "playwright-core": "^1.49.1",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": { "node": ">=20" }
+}
